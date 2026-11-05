@@ -1,0 +1,9 @@
+{
+    "name": "ffmanager",
+    "description": "FFManager native host",
+    "path": "/CHEMIN/ABSOLU/ff-window.py",
+    "type": "stdio",
+    "allowed_extensions": [
+        "ffmanager@king"
+    ]
+}

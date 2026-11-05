@@ -1,7 +1,0 @@
-{
-  "manifest_version": 3,
-  "name": "firefox window management",
-  "version": "0.1",
-  "permissions": ["tabs", "storage"],
-  "background": { "scripts": ["saves.js"] }
-}
