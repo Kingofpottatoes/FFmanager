@@ -20,5 +20,9 @@
     "background": {
         "scripts": ["native.js","background.js"],
         "persistent": true
+    },
+    "browser_action": {
+        "default_title": "FFManager",
+        "default_popup": "popup/popup.html"
     }
 }
