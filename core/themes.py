@@ -1,6 +1,7 @@
 import json
 import re
 from pathlib import Path
+import os
 
 THEMES_FOLDER = Path.home() / ".local" / "share" / "ff-manager"
 THEMES_FOLDER.mkdir(parents=True, exist_ok=True)
@@ -32,15 +33,18 @@ def delete_theme_file(theme_name):
         raise ValueError("Invalid theme name")
     theme_path=THEMES_FOLDER/(theme_name+".json")
     theme_path.unlink(missing_ok=True)
-def create_theme_file(name,tabs):
-    if not is_valid_name(name):
-        raise ValueError("Invalid theme name")
-    theme_path=THEMES_FOLDER/(name+".json")
-    if theme_path.exists():
-        raise FileExistsError(f"Theme {name} already exists")
+def write_theme_file(theme_path,name,tabs):
     data={
         "name":name,
         "tabs":[{"url":t["url"],"title":t["title"],"pinned":False} for t in tabs] #False by default, not implemented yet
     }
-    with theme_path.open("w", encoding="utf-8") as f:
+    with (theme_path.with_suffix(".json.tmp")).open("w", encoding="utf-8") as f:
         json.dump(data,f,indent=4)
+    os.replace(theme_path.with_suffix(".json.tmp"),theme_path)
+def create_theme_file(name,tabs,replace=False):
+    if not is_valid_name(name):
+        raise ValueError("Invalid theme name")
+    theme_path=THEMES_FOLDER/(name+".json")
+    if theme_path.exists() and not replace:
+        raise FileExistsError(f"Theme {name} already exists")
+    write_theme_file(theme_path,name,tabs)
