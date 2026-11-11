@@ -1,6 +1,7 @@
 import subprocess
 import sys
 import json
+from urllib.parse import urlencode
 from core.hyprland import (
     first_unoccupied,
     occupied_ws,
@@ -17,17 +18,11 @@ from core.themes import (
     create_theme_file,
     THEMES_FOLDER
 )
-
-
-
-def launch_firefox(urls):
-    if len(urls)<1:
-        raise ValueError("pas d'url")
-    elif len(urls)==1:
-        subprocess.Popen(["firefox","--new-window"]+urls,stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True)
-    else:
-        subprocess.Popen(["firefox"]+urls,stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True)
-
+def build_marker(name,urls):
+    marked_url="about:blank#ffmanager&"+urlencode([("theme",name)]+[("url",urls[i]) for i in range(len(urls))])
+    return marked_url
+def launch_firefox(url):
+    subprocess.Popen(["firefox","--new-window",url],stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True)
 
 
 
@@ -42,10 +37,10 @@ def open_new_window(themes_path,name="",supplementary_urls=None,workspace_destin
         target_ws=workspace_destination
     currents_windows=window_addresses()
     if name!="":
-        urls=get_url_from_theme(name)+supplementary_urls
+        marker=build_marker(name,supplementary_urls)
     else:
-        urls=supplementary_urls
-    launch_firefox(urls)
+        marker=build_marker("Unnamed",supplementary_urls)
+    launch_firefox(marker)
     address_firefox=get_new_window_address(currents_windows,5)
     move_window(address_firefox[0],target_ws)
 

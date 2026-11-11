@@ -53,7 +53,7 @@ def get_action(FF_message):
     args=FF_message["data"] if FF_message["data"] is not None else {}
     if FF_message["action"]=="list_themes":
         return list_themes()
-    elif FF_message["action"]=="get_url_from_themes":
+    elif FF_message["action"]=="get_url_from_theme":
         return get_url_from_theme(**args)
     elif FF_message["action"]=="create_theme":
         return create_theme_file(**args)

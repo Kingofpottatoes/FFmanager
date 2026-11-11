@@ -7,7 +7,7 @@ THEMES_FOLDER = Path.home() / ".local" / "share" / "ff-manager"
 THEMES_FOLDER.mkdir(parents=True, exist_ok=True)
 
 def is_valid_name(name):
-    return re.fullmatch(r"[\w-]+", name)
+    return re.fullmatch(r"[\w-]+", name) and name!="Unnamed"
 
 def list_themes():
 
