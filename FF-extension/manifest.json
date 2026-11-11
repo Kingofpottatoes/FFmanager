@@ -4,7 +4,7 @@
 
     "name": "FFManager",
     "version": "1.0.0",
-    "description": "Firefox theme manager for Caelestia",
+    "description": "Firefox theme manager",
 
     "browser_specific_settings": {
         "gecko": {
@@ -18,7 +18,7 @@
     ],
 
     "background": {
-        "scripts": ["background.js"],
+        "scripts": ["native.js","background.js"],
         "persistent": true
     }
 }

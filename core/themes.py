@@ -32,7 +32,7 @@ def delete_theme_file(theme_name):
         raise ValueError("Invalid theme name")
     theme_path=THEMES_FOLDER/(theme_name+".json")
     theme_path.unlink(missing_ok=True)
-def create_theme_file(name,urls):
+def create_theme_file(name,tabs):
     if not is_valid_name(name):
         raise ValueError("Invalid theme name")
     theme_path=THEMES_FOLDER/(name+".json")
@@ -40,7 +40,7 @@ def create_theme_file(name,urls):
         raise FileExistsError(f"Theme {name} already exists")
     data={
         "name":name,
-        "tabs":[{"url":urls[i],"title":"TODO","pinned":False} for i in range(0,len(urls))]
+        "tabs":[{"url":t["url"],"title":t["title"],"pinned":False} for t in tabs] #False by default, not implemented yet
     }
     with theme_path.open("w", encoding="utf-8") as f:
         json.dump(data,f,indent=4)

@@ -1,20 +1,13 @@
-let nativePort = null;
 
-function connectNative() {
-    nativePort = browser.runtime.connectNative("ffmanager");
+const connection = connectNative();
 
-    nativePort.onMessage.addListener((message) => {
-        console.log("[FFManager] Message reçu :", message);
-    });
-
-    nativePort.onDisconnect.addListener(() => {
-        console.error(
-            "[FFManager] Déconnexion :",
-            browser.runtime.lastError
-        );
-
-        nativePort = null;
-    });
+async function getTabs() {
+    const tabs = await browser.tabs.query({currentWindow:true});
+    const results = tabs.map(tab => ({url:tab.url,title:tab.title}))
+    return results
 }
 
-connectNative();
+async function createTheme(connection,name){
+    const tabs= await getTabs()
+    return await sendMessage(connection,"create_theme",{"name":name,"tabs":tabs})
+}
