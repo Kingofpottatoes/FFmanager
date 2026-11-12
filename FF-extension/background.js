@@ -1,6 +1,7 @@
 const connection = connectNative();
 const MARKER_PREFIX="about:blank#ffmanager&"
 const window_theme= new Map()
+const window_timers = new Map()
 async function get_currents_Tabs(windowId) {
     const tabs = await browser.tabs.query({ windowId: windowId });
     const results = tabs.map(tab => ({url:tab.url,title:tab.title,pinned:tab.pinned}))
@@ -8,11 +9,13 @@ async function get_currents_Tabs(windowId) {
 }
 async function open_theme(windowId,markerTabId,theme_name,supplementary_urls){
     let theme_tabs=[]
+    if (theme_name!=="Unnamed"){
         const response=await sendMessage(connection,"get_tabs_from_theme",{"name":theme_name})
         if (!response.success){//python error
             console.error(response.error)
         }
         else {theme_tabs=response.data}
+    }
     for (const url of supplementary_urls){
         theme_tabs.push({url:url,title:url,pinned:false})
     }
@@ -49,43 +52,55 @@ function get_mark(tabId,changeInfo,tab){
     const urls=params.getAll("url")
     open_theme(tab.windowId,tabId,theme_name,urls)
 }
-async function rewrite(windowId){
+async function save(windowId){
+    if (!window_theme.has(windowId)) return //should never happen but, you never know
     const tabs=await get_currents_Tabs(windowId)
     const response =await sendMessage(connection,"create_theme",{"name":window_theme.get(windowId),"tabs":tabs,"replace":true})
     if (!response.success){
         console.error(response.error)
     }
 }
+function rewrite(windowId){
+    if (window_timers.has(windowId)){
+        clearTimeout(window_timers.get(windowId))
+    }
+    const timer_id=setTimeout(()=>save(windowId),1000)
+    window_timers.set(windowId,timer_id)
+}
 function on_created(tab){
     if (!window_theme.has(tab.windowId)){return}
-    result = rewrite(tab.windowId)
+    rewrite(tab.windowId)
 
 }
 function on_removed(Tabid,windowInfo){
     if (!window_theme.has(windowInfo.windowId)){return}
     if (!windowInfo.isWindowClosing){
-        result = rewrite(windowInfo.windowId)
+        rewrite(windowInfo.windowId)
     }
 }
 function on_updated(TabId,changeInfo,tab){
     if (!window_theme.has(tab.windowId)){return}
-    result = rewrite(tab.windowId)
+    rewrite(tab.windowId)
 }
 function on_moved(tabId,windowInfo){
     if (!window_theme.has(windowInfo.windowId)){return}
-    result = rewrite(windowInfo.windowId)
+    rewrite(windowInfo.windowId)
 
 }
 function on_attached(Tabid,removeinfo){
     if (!window_theme.has(removeinfo.newWindowId)){return}
-    result = rewrite(removeinfo.newWindowId)
+    rewrite(removeinfo.newWindowId)
 }
 function on_detached(Tabid,removeinfo){
     if (!window_theme.has(removeinfo.oldWindowId)){return}
-    result = rewrite(removeinfo.oldWindowId)
+    rewrite(removeinfo.oldWindowId)
 }
 function on_window_removed(windowId){
     window_theme.delete(windowId)
+    if (window_timers.has(windowId)){
+        clearTimeout(window_timers.get(windowId))
+        window_timers.delete(windowId)
+    }
 }
 
 browser.tabs.onUpdated.addListener(get_mark,{ properties: ["url"] });
