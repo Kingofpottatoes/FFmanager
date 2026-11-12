@@ -36,7 +36,7 @@ def delete_theme_file(theme_name):
 def write_theme_file(theme_path,name,tabs):
     data={
         "name":name,
-        "tabs":[{"url":t["url"],"title":t["title"],"pinned":False} for t in tabs] #False by default, not implemented yet
+        "tabs":[{"url":t["url"],"title":t["title"],"pinned":t["pinned"]} for t in tabs] #False by default, not implemented yet
     }
     with (theme_path.with_suffix(".json.tmp")).open("w", encoding="utf-8") as f:
         json.dump(data,f,indent=4)

@@ -1,0 +1,22 @@
+{
+  "name": "ffmanager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kingofpottatoes/firefox-workspace-save-extension.git"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Kingofpottatoes/firefox-workspace-save-extension/issues"
+  },
+  "homepage": "https://github.com/Kingofpottatoes/firefox-workspace-save-extension#readme",
+  "devDependencies": {
+    "@types/firefox-webext-browser": "^143.0.1"
+  }
+}
