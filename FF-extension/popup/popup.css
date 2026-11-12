@@ -1,0 +1,31 @@
+:root { color-scheme: light dark; }
+
+h3 { text-align: center; } 
+body { background-color: Canvas;
+       color: CanvasText;
+       font-family: system-ui, sans-serif;
+       font-size: 14px;
+       margin: 0px;
+       padding: 10px;
+}
+#Theme-input button{
+    background-color: AccentColor;
+    color: AccentColorText;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font: inherit;
+    cursor: pointer;
+}   
+#Theme-Name-Error {
+    color: red;
+    text-align: center;
+}
+#Theme-Name{
+    color: CanvasText;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font: inherit;
+    cursor: pointer;
+}

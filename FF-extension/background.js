@@ -32,7 +32,7 @@ async function open_theme(windowId,markerTabId,theme_name,supplementary_urls){
     if (n_tabs===0){
         await browser.tabs.create({windowId: windowId})
     }
-    if (theme_name!=="Unnamed"){
+    if (theme_name!=="Unnamed" && ![...window_theme.values()].includes(theme_name)){
         window_theme.set(windowId,theme_name)
         browser.browserAction.setIcon({ path: "icons/tab_group.svg", windowId: windowId })
         browser.browserAction.setTitle({ title: "FFManager : " + theme_name, windowId: windowId })
@@ -52,6 +52,7 @@ async function createTheme(windowId,name){
                 console.error(delete_result.error)
             }
         }
+
         window_theme.set(windowId,name)
         browser.browserAction.setIcon({ path: "icons/tab_group.svg", windowId: windowId })
         browser.browserAction.setTitle({ title: "FFManager : " + name, windowId: windowId })
