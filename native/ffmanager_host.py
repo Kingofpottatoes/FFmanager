@@ -11,7 +11,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from core.themes import (
     THEMES_FOLDER,
     list_themes,
-    get_url_from_theme,
+    get_tabs_from_theme,
     create_theme_file,
     delete_theme_file
 )
@@ -53,8 +53,8 @@ def get_action(FF_message):
     args=FF_message["data"] if FF_message["data"] is not None else {}
     if FF_message["action"]=="list_themes":
         return list_themes()
-    elif FF_message["action"]=="get_url_from_theme":
-        return get_url_from_theme(**args)
+    elif FF_message["action"]=="get_tabs_from_theme":
+        return get_tabs_from_theme(**args)
     elif FF_message["action"]=="create_theme":
         return create_theme_file(**args)
     elif FF_message["action"]=="delete_theme":

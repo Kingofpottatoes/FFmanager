@@ -7,34 +7,26 @@ async function get_currents_Tabs(windowId) {
     return results
 }
 async function open_theme(windowId,markerTabId,theme_name,supplementary_urls){
-    let response={"success":false}
-    if (theme_name!=="Unnamed"){
-        response=await sendMessage(connection,"get_url_from_theme",{"name":theme_name})
+    let theme_tabs=[]
+        const response=await sendMessage(connection,"get_tabs_from_theme",{"name":theme_name})
+        if (!response.success){//python error
+            console.error(response.error)
+        }
+        else {theme_tabs=response.data}
+    for (const url of supplementary_urls){
+        theme_tabs.push({url:url,title:url,pinned:false})
     }
-    let urls=[]
-    if (response.success){//response from python and theme !=Unnamed
-        urls= [...response.data,...supplementary_urls]
-    }
-    else if (theme_name!=="Unnamed"){//error from python and theme != Unnamed
-        console.error(response.error)
-        urls=[...supplementary_urls]
-    }
-    else{//Unnamed case
-        urls=[...supplementary_urls]
-    }
-    let tabs=urls.length
-    if (urls.length>0){
-        for (const url of urls){
+    let n_tabs=theme_tabs.length
+    for (const t of theme_tabs){
             try{
-                await browser.tabs.create({windowId: windowId, url: url})
+                await browser.tabs.create({windowId: windowId, url: t.url,discarded:true,active:false,title:t.title,pinned:t.pinned})
             }
             catch (e){
                 console.error(e)
-                tabs=tabs-1
+                n_tabs=n_tabs-1
             }
-        }    
     }
-    if (tabs===0){
+    if (n_tabs===0){
         await browser.tabs.create({windowId: windowId})
     }
     if (theme_name!=="Unnamed"){

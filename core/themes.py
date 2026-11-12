@@ -27,6 +27,17 @@ def get_url_from_theme(name):
         theme_tabs=theme["tabs"]
         urls= [theme_tabs[i]["url"] for i in range(0,len(theme_tabs)) if theme_tabs[i]["url"].startswith(("http://", "https://"))]
     return urls
+def get_tabs_from_theme(name):
+    if not is_valid_name(name):
+        raise ValueError("Invalid theme name")
+    theme_path=THEMES_FOLDER/(name+".json")
+
+    with theme_path.open() as f:
+        theme=json.load(f)
+        theme_tabs=theme["tabs"]
+        tabs= [{"url":theme_tabs[i]["url"],"title":theme_tabs[i]["title"],"pinned":theme_tabs[i]["pinned"]} 
+            for i in range(0,len(theme_tabs)) if theme_tabs[i]["url"].startswith(("http://", "https://"))]
+    return tabs
 #delete or create theme file
 def delete_theme_file(theme_name):
     if not is_valid_name(theme_name):
@@ -36,7 +47,7 @@ def delete_theme_file(theme_name):
 def write_theme_file(theme_path,name,tabs):
     data={
         "name":name,
-        "tabs":[{"url":t["url"],"title":t["title"],"pinned":t["pinned"]} for t in tabs] #False by default, not implemented yet
+        "tabs":[{"url":t["url"],"title":t["title"],"pinned":t["pinned"]} for t in tabs]
     }
     with (theme_path.with_suffix(".json.tmp")).open("w", encoding="utf-8") as f:
         json.dump(data,f,indent=4)
