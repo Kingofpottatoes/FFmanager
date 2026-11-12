@@ -21,19 +21,18 @@ async function init(){
 async function onSubmit(event){
     if (windowId === null) {return} //should never happen but, you never know
     event.preventDefault();
-    const name = input.value.trim() || input.placeholder;
+    const name = input.value.trim() || current_name || "Unnamed";
     if (name.length===0){
         status.textContent = "Theme name cannot be empty"
         return
     }
     status.textContent = ""
     if (name!==current_name){
-        const reply = await browser.runtime.sendMessage({action:"create_theme",windowId:windowId,theme:name})
+        const reply = await browser.runtime.sendMessage({action:"create_theme",windowId:windowId,name:name})
         if (reply.success){
             current_name=name
             input.placeholder= current_name
             input.value=""
-            status.textContent = "Theme name!: " + current_name
         }
         else{
             status.textContent = reply.error
