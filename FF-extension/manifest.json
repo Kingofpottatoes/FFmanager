@@ -22,7 +22,9 @@
         "persistent": true
     },
     "browser_action": {
-        "default_title": "FFManager",
-        "default_popup": "popup/popup.html"
+        "default_title": "FFManager : Unnamed",
+        "default_popup": "popup/popup.html",
+        "default_area" :"navbar",
+        "default_icon": "icons/Unnamed.svg"
     }
 }

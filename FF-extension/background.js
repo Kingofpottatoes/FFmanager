@@ -34,17 +34,31 @@ async function open_theme(windowId,markerTabId,theme_name,supplementary_urls){
     }
     if (theme_name!=="Unnamed"){
         window_theme.set(windowId,theme_name)
+        browser.browserAction.setIcon({ path: "icons/tab_group.svg", windowId: windowId })
+        browser.browserAction.setTitle({ title: "FFManager : " + theme_name, windowId: windowId })
     }
     await browser.tabs.remove(markerTabId) //clean the window
 }
-async function createTheme(connection,name){
-    const win = await browser.windows.getCurrent()
-    const tabs= await get_currents_Tabs(win.id)
-    result = await sendMessage(connection,"create_theme",{"name":name,"tabs":tabs})
+async function createTheme(windowId,name){
+    clearTimeout(window_timers.get(windowId))
+    window_timers.delete(windowId)
+    const tabs= await get_currents_Tabs(windowId)
+    const result = await sendMessage(connection,"create_theme",{"name":name,"tabs":tabs})
+    const old_name=window_theme.get(windowId)
     if (result.success){
-        window_theme.set(win.id,name)
+        if (old_name && old_name!==name){
+            const delete_result = await sendMessage(connection,"delete_theme",{"theme_name":old_name})
+            if (!delete_result.success){
+                console.error(delete_result.error)
+            }
+        }
+        window_theme.set(windowId,name)
+        browser.browserAction.setIcon({ path: "icons/tab_group.svg", windowId: windowId })
+        browser.browserAction.setTitle({ title: "FFManager : " + name, windowId: windowId })
     }
+    return result
 }
+
 function get_mark(tabId,changeInfo,tab){
     if (!changeInfo.url.startsWith(MARKER_PREFIX)){return}
     const params = new URLSearchParams(changeInfo.url.slice(MARKER_PREFIX.length));
@@ -113,3 +127,13 @@ browser.tabs.onMoved.addListener(on_moved)
 browser.tabs.onAttached.addListener(on_attached)
 browser.tabs.onDetached.addListener(on_detached)
 browser.windows.onRemoved.addListener(on_window_removed)
+
+async function handle_popup_message(message, sender){
+    if (message.action === "get_window_theme"){
+        return window_theme.get(message.windowId) ?? null
+    }
+    if (message.action === "create_theme"){
+        return await createTheme(message.windowId,message.name)
+    }
+}
+browser.runtime.onMessage.addListener(handle_popup_message)
