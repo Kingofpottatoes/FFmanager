@@ -25,7 +25,7 @@ def get_url_from_theme(name):
     with theme_path.open() as f:
         theme=json.load(f)
         theme_tabs=theme["tabs"]
-        urls= [theme_tabs[i]["url"] for i in range(0,len(theme_tabs)) if theme_tabs[i]["url"].startswith(("http://", "https://"))]
+        urls= [theme_tabs[i]["url"] for i in range(0,len(theme_tabs)) if theme_tabs[i]["url"].startswith(("http://", "https://","ftp://", "file://"))]
     return urls
 def get_tabs_from_theme(name):
     if not is_valid_name(name):
@@ -36,7 +36,7 @@ def get_tabs_from_theme(name):
         theme=json.load(f)
         theme_tabs=theme["tabs"]
         tabs= [{"url":theme_tabs[i]["url"],"title":theme_tabs[i]["title"],"pinned":theme_tabs[i]["pinned"]} 
-            for i in range(0,len(theme_tabs)) if theme_tabs[i]["url"].startswith(("http://", "https://"))]
+            for i in range(0,len(theme_tabs)) if theme_tabs[i]["url"].startswith(("http://", "https://","ftp://", "file://"))]
     return tabs
 #delete or create theme file
 def delete_theme_file(theme_name):
