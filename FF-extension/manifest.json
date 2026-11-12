@@ -9,7 +9,7 @@
     "browser_specific_settings": {
         "gecko": {
             "id": "ffmanager@king",
-            "data_collection_permissions":{ "required": ["None"]}
+            "data_collection_permissions":{ "required": ["none"]}
         }
     },
 
