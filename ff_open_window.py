@@ -13,7 +13,7 @@ from core.hyprland import (
 from core.themes import (
     is_valid_name,
     list_themes,
-    get_url_from_theme,
+    get_tabs_from_theme,
     delete_theme_file,
     create_theme_file,
     THEMES_FOLDER
@@ -67,12 +67,12 @@ def main():
 
         print(json.dumps(list_themes()))
         return 0
-    if args and args[0] == "--list-theme-urls":
+    if args and args[0] == "--list-theme-tabs":
         if len(args) != 2:
             print(help(), file=sys.stderr)
             return 2
 
-        print(json.dumps(get_url_from_theme(args[1])))
+        print(json.dumps(get_tabs_from_theme(args[1])))
         return 0
     for arg in args:
         if arg.startswith("--"):
