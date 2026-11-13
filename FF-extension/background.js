@@ -1,7 +1,7 @@
-const connection = connectNative();
 const MARKER_PREFIX="about:blank#ffmanager&"
 const window_theme= new Map()
 const window_timers = new Map()
+let treated_window =[]
 async function get_currents_Tabs(windowId) {
     const tabs = await browser.tabs.query({ windowId: windowId });
     const results = tabs.map(tab => ({url:tab.url,title:tab.title,pinned:tab.pinned}))
@@ -61,7 +61,11 @@ async function createTheme(windowId,name){
 }
 
 function get_mark(tabId,changeInfo,tab){
+    if(treated_window.includes(tabId)){
+        return
+    }
     if (!changeInfo.url.startsWith(MARKER_PREFIX)){return}
+    treated_window.push(tab.id)
     const params = new URLSearchParams(changeInfo.url.slice(MARKER_PREFIX.length));
     const theme_name=params.get("theme")
     const urls=params.getAll("url")
@@ -138,4 +142,18 @@ async function handle_popup_message(message, sender){
     }
 }
 browser.runtime.onMessage.addListener(handle_popup_message)
-connection.port.onDisconnect.addListener((p) => console.log("disconnected:", p.error));
+connection.port.onDisconnect.addListener((p) => {console.log("disconnected:", p.error)
+                                                    connection=null
+                                                });
+
+
+//On start
+async function on_extension_start(){
+    const current_tabs=await browser.tabs.query({})
+    for (const tab of current_tabs){
+        if(tab.url?.startsWith(MARKER_PREFIX)){
+            get_mark(tab.id,{ url: tab.url },tab)
+        }
+    }
+}
+on_extension_start()

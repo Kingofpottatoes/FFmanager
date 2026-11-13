@@ -6,13 +6,15 @@ function connectNative(){
     let request_id=0
     port.onDisconnect.addListener(() => {
         const error = new Error(
-            browser.runtime.lastError?.message || "Native Host disconnected"
+            port.error?.message || "Native Host disconnected"
         );
 
         for (const id in pendingRequests) {
             pendingRequests[id].reject(error);
             delete pendingRequests[id];
         }
+        connection=null
+        console.log("disconnected:", port.error)
     });
     port.onMessage.addListener((message) => {
         const request =pendingRequests[message.id]
@@ -28,7 +30,11 @@ function connectNative(){
         getNextID:()=>++request_id
     }
 }
-function sendMessage(connection,action,data){
+let connection=connectNative()
+function sendMessage(action,data){
+    if (connection===null){
+        connection=connectNative()
+    }
     const id=connection.getNextID();
     return new Promise((resolve,reject) =>{
         connection.pendingRequests[id] = {
