@@ -3,7 +3,7 @@
     "manifest_version": 2,
 
     "name": "FFManager",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Firefox theme manager",
 
     "browser_specific_settings": {
