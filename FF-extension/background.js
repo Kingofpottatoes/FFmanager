@@ -138,3 +138,4 @@ async function handle_popup_message(message, sender){
     }
 }
 browser.runtime.onMessage.addListener(handle_popup_message)
+connection.port.onDisconnect.addListener((p) => console.log("disconnected:", p.error));

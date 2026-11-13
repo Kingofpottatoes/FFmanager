@@ -1,7 +1,7 @@
 {
     "name": "ffmanager",
     "description": "FFManager native host",
-    "path": "/home/king/Code/Projects/FFmanager/native/ffmanager_host.py",
+    "path": "@HOST_PATH@",
     "type": "stdio",
     "allowed_extensions": [
         "ffmanager@king"
