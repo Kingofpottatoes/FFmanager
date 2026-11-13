@@ -10,7 +10,7 @@ async function get_currents_Tabs(windowId) {
 async function open_theme(windowId,markerTabId,theme_name,supplementary_urls){
     let theme_tabs=[]
     if (theme_name!=="Unnamed"){
-        const response=await sendMessage(connection,"get_tabs_from_theme",{"name":theme_name})
+        const response=await sendMessage("get_tabs_from_theme",{"name":theme_name})
         if (!response.success){//python error
             console.error(response.error)
         }
@@ -43,11 +43,11 @@ async function createTheme(windowId,name){
     clearTimeout(window_timers.get(windowId))
     window_timers.delete(windowId)
     const tabs= await get_currents_Tabs(windowId)
-    const result = await sendMessage(connection,"create_theme",{"name":name,"tabs":tabs})
+    const result = await sendMessage("create_theme",{"name":name,"tabs":tabs})
     const old_name=window_theme.get(windowId)
     if (result.success){
         if (old_name && old_name!==name){
-            const delete_result = await sendMessage(connection,"delete_theme",{"theme_name":old_name})
+            const delete_result = await sendMessage("delete_theme",{"theme_name":old_name})
             if (!delete_result.success){
                 console.error(delete_result.error)
             }
@@ -74,7 +74,7 @@ function get_mark(tabId,changeInfo,tab){
 async function save(windowId){
     if (!window_theme.has(windowId)) return //should never happen but, you never know
     const tabs=await get_currents_Tabs(windowId)
-    const response =await sendMessage(connection,"create_theme",{"name":window_theme.get(windowId),"tabs":tabs,"replace":true})
+    const response =await sendMessage("create_theme",{"name":window_theme.get(windowId),"tabs":tabs,"replace":true})
     if (!response.success){
         console.error(response.error)
     }
@@ -142,9 +142,6 @@ async function handle_popup_message(message, sender){
     }
 }
 browser.runtime.onMessage.addListener(handle_popup_message)
-connection.port.onDisconnect.addListener((p) => {console.log("disconnected:", p.error)
-                                                    connection=null
-                                                });
 
 
 //On start
