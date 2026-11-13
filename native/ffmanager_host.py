@@ -15,7 +15,7 @@ from core.themes import (
     create_theme_file,
     delete_theme_file
 )
-from ff_open_window import open_new_window
+from core.windows import open_new_window
 def read_bytes(n,allow_eof=False):#lit les n premiers bytes, avec un safe guard si connexion interrompue
     data=b""
     while len(data)<n:
